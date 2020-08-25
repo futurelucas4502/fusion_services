@@ -1,0 +1,23 @@
+{
+  "name": "fusion-services-finance-program",
+  "version": "1.0.0",
+  "description": "A program to manage profits and expences for Fusion Services Home Help",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "futurelucas4502",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^10.0.0"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futurelucas4502/fusion_services.git"
+  },
+  "bugs": {
+    "url": "https://github.com/futurelucas4502/fusion_services/issues"
+  },
+  "homepage": "https://github.com/futurelucas4502/fusion_services#readme"
+}
