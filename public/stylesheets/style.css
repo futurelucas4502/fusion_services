@@ -1,0 +1,19 @@
+.center-wrap {
+    width: 100%;
+    text-align: center;
+}
+
+.company-logo-100 {
+    height: auto;
+    width: 100px
+}
+
+.company-logo-75 {
+    height: auto;
+    width: 75px
+}
+
+.nicer-link {
+    border-bottom: 1px solid #6c757d;
+    text-decoration: none!important;
+}

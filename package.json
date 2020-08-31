@@ -1,10 +1,16 @@
 {
   "name": "fusion-services-finance-program",
+  "productName": "Fusion Services Home Help - Finance Manager",
   "version": "1.0.0",
   "description": "A program to manage profits and expences for Fusion Services Home Help",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-builder build --publish never",
+    "release": "electron-builder build --publish always",
+    "pack": "electron-builder --dir --publish never",
+    "create-installer-win": "electron-builder build --win --publish never"
   },
   "author": "futurelucas4502",
   "license": "MIT",
@@ -13,7 +19,11 @@
     "electron-builder": "^22.8.0"
   },
   "dependencies": {
-    "electron-splashscreen": "^1.0.0",
+    "bcrypt": "^5.0.0",
+    "bootstrap": "^4.5.2",
+    "ejs": "^3.1.5",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1",
     "sqlite3": "^5.0.0"
   },
   "repository": {
@@ -23,5 +33,51 @@
   "bugs": {
     "url": "https://github.com/futurelucas4502/fusion_services/issues"
   },
-  "homepage": "https://github.com/futurelucas4502/fusion_services#readme"
+  "homepage": "https://github.com/futurelucas4502/fusion_services#readme",
+  "build": {
+    "appId": "com.electron.fusionservices",
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.png"
+    },
+    "linux": {
+      "target": "appImage",
+      "icon": "build/icon.png"
+    },
+    "dmg": {
+      "artifactName": "${productName}.${ext}",
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "appImage": {
+      "artifactName": "${productName}.${ext}",
+      "license": "LICENSE"
+    },
+    "nsis": {
+      "artifactName": "${productName}.${ext}",
+      "createDesktopShortcut": "always",
+      "license": "LICENSE"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "url": "https://github.com/futurelucas4502/fusion_services.git"
+      }
+    ]
+  }
 }

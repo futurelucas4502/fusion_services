@@ -4,3 +4,12 @@
 // `nodeIntegration` is turned off. Use `preload.js` to
 // selectively enable features needed in the rendering
 // process.
+
+window.addEventListener('DOMContentLoaded', () => {
+    ipcRenderer.send("page-ready", "ping")
+})
+
+ipcRenderer.on("reply", (arg) => {
+    // logs pong
+    console.log(arg)
+})
