@@ -2,19 +2,15 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' base:">
-  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self' base:">
+  <%- include("partials/head.ejs"); %>
   <link rel="preload" href="public/images/icon.png" as="image">
-  <link rel="stylesheet" href="public/stylesheets/style.css">
   <title>About</title>
 </head>
 
 <body>
   <header class="center-wrap">
     <img class="company-logo-75" src="public/images/icon.png" alt="Fusion Services Home Help">
-    <h1>Welcome to the about page!</h1>
+    <h1>About</h1>
   </header>
   <main class="center-wrap">
     <p><%= appName %>: <%= appVersion %><br>
@@ -24,8 +20,6 @@
   </main>
   <footer class="center-wrap">
     <h6>This app was made by Lucas Wilson (futurelucas4502)</h6>
-    <!-- You can also require other files to run in this process -->
-    <script src="public/javascripts/renderer.js"></script>
   </footer>
 </body>
 

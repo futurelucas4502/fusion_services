@@ -1,24 +1,17 @@
+'use strict';
+
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, Menu, shell, dialog, protocol } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron')
 const path = require('path')
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('data.sqlite');
 const isMac = process.platform === 'darwin'
 const bcrypt = require('bcrypt');
-const ejs = require('ejs');
 const gotTheLock = app.requestSingleInstanceLock()
+const ejs = require('@futurelucas4502/e-ejs')
 let username, password, mainWindow, dialogOpen = false
 
 function createWindow() {
-  console.log("Ready to create windows...")
-  console.log("Setting up custom ejs protocols...")
-
-  protocol.registerFileProtocol('base', (request, callback) => {
-    const url = request.url.substr(6)
-    const file = { path: path.normalize(`${__dirname}/${url}`) }
-    callback(file)
-  })
-
   // create a new `splash`-Window 
   const splash = new BrowserWindow({
     width: 500,
@@ -37,7 +30,6 @@ function createWindow() {
   splash.loadFile("splash.html")
 
   splash.once('ready-to-show', () => {
-    console.log("Splash ready...")
     splash.show()
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -171,7 +163,7 @@ function createWindow() {
     ])
     Menu.setApplicationMenu(menu)
     about.setMenu(null)
-    ejsWrapper("views/about.ejs", about, {
+    ejs.renderFile(about, "views/about.ejs", {
       appName: app.getName(),
       appVersion: app.getVersion(),
       chromeVersion: process.versions['chrome'],
@@ -186,15 +178,11 @@ function createWindow() {
       }
     });
     // and load the login page of the app.
-    ejsWrapper("views/login.ejs", mainWindow)
-
-
+    ejs.renderFile(mainWindow, "views/login.ejs")
 
     // if main window is ready to show, then destroy the splash window and show up the main window
     mainWindow.once('ready-to-show', () => {
-      console.log("Main ready. Waiting 3 seconds for splash...")
       setTimeout(() => {
-        console.log("3 Seconds over killing splash and loading main...")
         splash.destroy()
         mainWindow.hide() // If we do show on its own it shows but in the background so we have to do hide first it seems to be an issue withing electron on how the new browserwindows are created
         mainWindow.show()
@@ -245,21 +233,6 @@ if (!gotTheLock) {
     }
   })
 }
-console.log("Setting up ejs rendering wrapper...")
-// Start setup of ejs
-
-function ejsWrapper(path, window, data) {
-  if(typeof data == undefined || data == undefined || data == null || data == ""){
-    data = "{}"
-  }
-  ejs.renderFile(path, data, (err, str) => {
-    window.loadURL('data:text/html;charset=UTF-8,' + encodeURIComponent(str), {
-      baseURLForDataURL: 'base:/' // have to use this as `file://${__dirname}` is broken see here: https://github.com/electron/electron/issues/20700#issuecomment-573847842
-    })
-  })
-}
-
-// End setup of ejs
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
@@ -269,38 +242,57 @@ function ejsWrapper(path, window, data) {
 //   event.reply('reply', 'pong')
 // })
 
-function authCheck (){
-  db.get(`SELECT * FROM users WHERE username = (?)`, username, function (err, row) {
-    if (err) {
-      console.log(err)
-    }
-    if (typeof row == undefined || row == undefined || row == null || row == "") {
-      return logout(true)
-    }
-    bcrypt.compare(password, row.password, function (err, result) {
-      if (!result) {
-        return logout(true)
-      }
-      return true
+function alert(win, jsonData) {
+  if (!dialogOpen) {
+    dialogOpen = true
+    dialog.showMessageBox(win, jsonData).then(() => {
+      dialogOpen = false
     });
-  });
+  }
 }
 
 function logout(authFail) {
-  ejsWrapper("views/login.ejs", mainWindow)
+  ejs.renderFile(mainWindow, "views/login.ejs")
   username = null
   password = null
   mainWindow.webContents.on('did-finish-load', () => {
     if (authFail == true) {
-      if (!dialogOpen) {
-        dialogOpen = true
-        dialog.showMessageBox(mainWindow, { type: 'error', buttons: ['OK'], title: 'Error', message: 'Unauthorised Access!' }).then(response => {
-          dialogOpen = false
-          authFail = false
-        });
-      }
+      alert(mainWindow, {
+        type: 'error',
+        buttons: ['OK'],
+        title: 'Error',
+        message: 'Unauthorised Access!'
+      })
+      authFail = false
     }
   })
+}
+
+// function authCheck() { // is this needed?? hmm
+//   db.get(`SELECT * FROM users WHERE username = (?)`, username, function (err, row) {
+//     if (err) {
+//       console.log(err)
+//     }
+//     if (typeof row === undefined || row === undefined || row === null || row == "") {
+//       return logout(true)
+//     }
+//     bcrypt.compare(password, row.password, function (err, result) {
+//       if (!result) {
+//         return logout(true)
+//       }
+//       return true
+//     });
+//   });
+// }
+
+
+function loadIndex(){
+  db.all(`SELECT * FROM clients`, function (error, result) {
+    if (error) throw new Error(error)
+    ejs.renderFile(mainWindow, "views/index.ejs", {
+      clients: `${JSON.stringify(result)}`
+    })
+  });
 }
 
 ipcMain.on("login", (event, arg) => {
@@ -310,24 +302,53 @@ ipcMain.on("login", (event, arg) => {
     if (err) {
       console.log(err)
     }
-    if (typeof row == undefined || row == undefined || row == null || row == "") {
-      if (!dialogOpen) {
-        dialogOpen = true
-        return dialog.showMessageBox(mainWindow, { type: 'error', buttons: ['OK'], title: 'Login Failed', message: 'Incorrect username or password.\nPlease try again.' }).then(response => {
-          dialogOpen = false
-        });
-      }
+    if (typeof row === undefined || row === undefined || row === null || row == "") {
+      alert(mainWindow, {
+        type: 'error',
+        buttons: ['OK'],
+        title: 'Login Failed',
+        message: 'Incorrect username or password.\nPlease try again.'
+      })
+      return event.reply("incorrect")
     }
     bcrypt.compare(arg.password, row.password, function (err, result) {
       if (!result) {
-        if (!dialogOpen) {
-          dialogOpen = true
-          return dialog.showMessageBox(mainWindow, { type: 'error', buttons: ['OK'], title: 'Login Failed', message: 'Incorrect username or password.\nPlease try again.' }).then(response => {
-            dialogOpen = false
-          });
-        }
+        alert(mainWindow, {
+          type: 'error',
+          buttons: ['OK'],
+          title: 'Login Failed',
+          message: 'Incorrect username or password.\nPlease try again.'
+        })
+        return event.reply("incorrect")
       }
-      ejsWrapper("views/index.ejs", mainWindow)
+      loadIndex()
     });
+  });
+})
+
+ipcMain.on("logout", () => {
+  logout()
+})
+
+
+ipcMain.on('add', (event, arg) => {
+  db.run(`INSERT INTO clients(firstName, lastName, address, number, email) VALUES(?, ?, ?, ?, ?)`, [arg.firstName, arg.lastName, arg.address, arg.number, arg.email], function (err) {
+    if (err) {
+      loadIndex()
+      alert(mainWindow, {
+        type: 'error',
+        buttons: ['OK'],
+        title: 'Error',
+        message: 'An unknown error occured!\nThe client was not added'
+      })
+      return console.log(err);
+    }
+    alert(mainWindow, {
+      type: 'info',
+      buttons: ['OK'],
+      title: 'Success',
+      message: 'The client was added successfully!'
+    })
+    loadIndex()
   });
 })

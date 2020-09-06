@@ -15,15 +15,12 @@
   "author": "futurelucas4502",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^10.0.0",
+    "electron": "^10.1.1",
     "electron-builder": "^22.8.0"
   },
   "dependencies": {
+    "@futurelucas4502/e-ejs": "^3.0.3",
     "bcrypt": "^5.0.0",
-    "bootstrap": "^4.5.2",
-    "ejs": "^3.1.5",
-    "jquery": "^3.5.1",
-    "popper.js": "^1.16.1",
     "sqlite3": "^5.0.0"
   },
   "repository": {

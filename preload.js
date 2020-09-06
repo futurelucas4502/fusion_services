@@ -36,10 +36,3 @@ contextBridge.exposeInMainWorld(
 );
 
 // End making ipc safe
-
-window.onload = function () {
-  window.jQuery = window.$ = require('jquery');
-  window.Bootstrap = require('bootstrap')
-  console.log('JQuery and Bootstrap are loaded');
-}
-
