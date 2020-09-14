@@ -1,5 +1,8 @@
 'use strict';
 
+// TODO: add checks for the database existing if it doesnt exist make it
+// TODO: if someone deletes the database while the app is running if a query errors check if it exists and if it doesnt throw a fatal error and exit
+
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron')
 const path = require('path')
@@ -286,11 +289,29 @@ function logout(authFail) {
 // }
 
 
-function loadIndex(){
+function loadIndex() {
   db.all(`SELECT * FROM clients`, function (error, result) {
     if (error) throw new Error(error)
     ejs.renderFile(mainWindow, "views/index.ejs", {
       clients: `${JSON.stringify(result)}`
+    })
+  });
+}
+
+function loadClientJob(client) {
+  db.all(`SELECT * FROM jobs WHERE client ID = (?)`, client, function (error, result) {
+    if (error) throw new Error(error)
+    ejs.renderFile(mainWindow, "views/jobs.ejs", {
+      jobs: `${JSON.stringify(result)}`
+    })
+  });
+}
+
+function loadAllJobs() {
+  db.all(`SELECT * FROM jobs`, function (error, result) {
+    if (error) throw new Error(error)
+    ejs.renderFile(mainWindow, "views/jobs.ejs", {
+      jobs: `${JSON.stringify(result)}`
     })
   });
 }
@@ -348,6 +369,28 @@ ipcMain.on('add', (event, arg) => {
       buttons: ['OK'],
       title: 'Success',
       message: 'The client was added successfully!'
+    })
+    loadIndex()
+  });
+})
+
+ipcMain.on('next', (event, arg) => {
+  db.run(`INSERT INTO jobs(description, hours, earning, clientID) VALUES(?, ?, ?, ?)`, [arg.jobDesc, arg.clientHrs, arg.earning, arg.client], function (err) {
+    if (err) {
+      loadIndex()
+      alert(mainWindow, {
+        type: 'error',
+        buttons: ['OK'],
+        title: 'Error',
+        message: 'An unknown error occured!\nThe job was not added'
+      })
+      return console.log(err);
+    }
+    alert(mainWindow, {
+      type: 'info',
+      buttons: ['OK'],
+      title: 'Success',
+      message: 'The job was added successfully!'
     })
     loadIndex()
   });

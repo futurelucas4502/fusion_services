@@ -3,15 +3,15 @@
 
 <head>
     <%- include("partials/head.ejs"); %>
-    <link rel="preload" href="../public/images/icon.png" as="image">
-    <link rel="stylesheet" href="../public/stylesheets/login.css">
+    <link rel="preload" href="assets:///public/images/icon.png" as="image">
+    <link rel="stylesheet" href="assets:///public/stylesheets/login.css">
     <title>Home</title>
 </head>
 
 <body>
     <form class="form-signin card shadow">
         <div class="center-wrap">
-            <img class="company-logo-75" src="../public/images/icon.png" alt="Fusion Services Home Help">
+            <img class="company-logo-75" src="assets:///public/images/icon.png" alt="Fusion Services Home Help">
         </div>
         <h1 class="text-center">Fusion Services</h1>
         <h2 class="text-center">Home Help</h2>
@@ -31,14 +31,14 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <div class="mt-3 text-center">
                 <a class="text-muted nicer-link"
-                    href="/user/forgot-password">Forgot password</a>
+                    href="ejs:///user/forgot-password">Forgot password</a>
             </div>
         <p class="mt-4 text-muted text-center">&copy; Fusion Services Home Help 2020</p>
     </form>
 
     <footer>
         <%- include("partials/footer.ejs"); %>
-        <script src="../public/javascripts/login.js"></script>
+        <script src="assets:///public/javascripts/login.js"></script>
     </footer>
 </body>
 

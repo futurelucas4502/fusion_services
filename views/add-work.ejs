@@ -33,7 +33,7 @@
         </div>
     </main>
 
-    <!-- Add Client Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -65,7 +65,7 @@
                             <label for="clientEmail">Email address</label>
                             <input type="email" class="form-control" id="clientEmail">
                         </div>
-                        <div class="cus-modal-footer">
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Confirm</button>
                         </div>
@@ -74,60 +74,11 @@
             </div>
         </div>
     </div>
-    <!-- End Add Client Modal -->
-
-    <!-- Add Client Job Modal -->
-    <div class="modal fade" id="addClientJobModal" tabindex="-1" aria-labelledby="addClientJobModalTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addClientJobModalTitle">Add Client Job</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addClientJob">
-                        <div class="form-group">
-                            <label for="addClientJobDesc" class="form-label">Description</label>
-                            <textarea class="form-control" id="addClientJobDesc" rows="4"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="addClientHrs" class="form-label">Hours Worked</label>
-                            <select id="addClientHrs" class="form-select">
-                                <option value="" selected hidden>Options...</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                            </select>
-                        </div>
-                        <span for="addEarning" class="form-label">Amount charged per hour</span>
-                        <div class="input-group mt-2">
-                            <span class="input-group-text">£</span>
-                            <input type="number" id="addEarning" class="form-control">
-                        </div>
-                        <div class="cus-modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Confirm</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End Add Client Modal -->
 
     <footer>
         <%- include("partials/footer.ejs"); %>
         <textarea id="clients"><%= clients %></textarea>
-        <script src="assets:///public/javascripts/index.js"></script>
+        <script src="../public/javascripts/index.js"></script>
     </footer>
 </body>
 

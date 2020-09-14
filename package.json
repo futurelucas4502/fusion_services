@@ -19,7 +19,7 @@
     "electron-builder": "^22.8.0"
   },
   "dependencies": {
-    "@futurelucas4502/e-ejs": "^3.0.3",
+    "@futurelucas4502/e-ejs": "^4.0.0",
     "bcrypt": "^5.0.0",
     "sqlite3": "^5.0.0"
   },
