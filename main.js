@@ -7,7 +7,42 @@
 const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron')
 const path = require('path')
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('data.sqlite');
+const fs = require('fs')
+let db
+let newStart
+if (fs.existsSync(path.join(__dirname, "data.sqlite")) == false) {
+  db = new sqlite3.Database('data.sqlite');
+  db.run(`CREATE TABLE "clients" (
+	"ID"	INTEGER NOT NULL,
+	"firstName"	TEXT NOT NULL,
+	"lastName"	TEXT NOT NULL,
+	"address"	TEXT NOT NULL,
+	"number"	INTEGER NOT NULL,
+	"email"	TEXT NOT NULL,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+  );`)
+  db.run(`CREATE TABLE "users" (
+	"ID"	INTEGER,
+	"first_name"	TEXT,
+	"last_name"	TEXT,
+	"username"	TEXT,
+	"password"	TEXT,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+  );`)
+  db.run(`CREATE TABLE "jobs" (
+	"ID"	INTEGER NOT NULL,
+	"description"	TEXT NOT NULL,
+	"hours"	INTEGER NOT NULL,
+	"earning"	INTEGER NOT NULL,
+	"clientID"	INTEGER NOT NULL,
+	PRIMARY KEY("ID" AUTOINCREMENT),
+	FOREIGN KEY("clientID") REFERENCES "clients"("ID")
+  );`)
+  newStart = true
+} else {
+  db = new sqlite3.Database('data.sqlite');
+  newStart = false
+}
 const isMac = process.platform === 'darwin'
 const bcrypt = require('bcrypt');
 const gotTheLock = app.requestSingleInstanceLock()
@@ -181,7 +216,11 @@ function createWindow() {
       }
     });
     // and load the login page of the app.
-    ejs.renderFile(mainWindow, "views/login.ejs")
+    if (newStart == true) {
+      ejs.renderFile(mainWindow, "views/new.ejs")
+    } else {
+      ejs.renderFile(mainWindow, "views/login.ejs")
+    }
 
     // if main window is ready to show, then destroy the splash window and show up the main window
     mainWindow.once('ready-to-show', () => {
