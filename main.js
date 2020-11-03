@@ -11,43 +11,17 @@ const fs = require('fs')
 let db
 let newStart
 if (fs.existsSync(path.join(__dirname, "data.sqlite")) == false) {
-  db = new sqlite3.Database('data.sqlite');
-  db.run(`CREATE TABLE "clients" (
-	"ID"	INTEGER NOT NULL,
-	"firstName"	TEXT NOT NULL,
-	"lastName"	TEXT NOT NULL,
-	"address"	TEXT NOT NULL,
-	"number"	INTEGER NOT NULL,
-	"email"	TEXT NOT NULL,
-	PRIMARY KEY("ID" AUTOINCREMENT)
-  );`)
-  db.run(`CREATE TABLE "users" (
-	"ID"	INTEGER,
-	"first_name"	TEXT,
-	"last_name"	TEXT,
-	"username"	TEXT,
-	"password"	TEXT,
-	PRIMARY KEY("ID" AUTOINCREMENT)
-  );`)
-  db.run(`CREATE TABLE "jobs" (
-	"ID"	INTEGER NOT NULL,
-	"description"	TEXT NOT NULL,
-	"hours"	INTEGER NOT NULL,
-	"earning"	INTEGER NOT NULL,
-	"clientID"	INTEGER NOT NULL,
-	PRIMARY KEY("ID" AUTOINCREMENT),
-	FOREIGN KEY("clientID") REFERENCES "clients"("ID")
-  );`)
   newStart = true
 } else {
   db = new sqlite3.Database('data.sqlite');
   newStart = false
 }
 const isMac = process.platform === 'darwin'
+const isDev = require('electron-is-dev');
 const bcrypt = require('bcrypt');
 const gotTheLock = app.requestSingleInstanceLock()
 const ejs = require('@futurelucas4502/e-ejs')
-let username, password, mainWindow, dialogOpen = false
+let username, password, mainWindow, about, dialogOpen = false
 
 function createWindow() {
   // create a new `splash`-Window 
@@ -83,7 +57,7 @@ function createWindow() {
       show: false
     })
 
-    const about = new BrowserWindow({
+    about = new BrowserWindow({
       width: 300,
       height: 400,
       webPreferences: {
@@ -102,12 +76,6 @@ function createWindow() {
       ...(isMac ? [{
         label: app.name,
         submenu: [
-          {
-            label: 'about',
-            click: async () => {
-              about.show()
-            }
-          },
           { type: 'separator' },
           { role: 'services' },
           { type: 'separator' },
@@ -181,6 +149,14 @@ function createWindow() {
             ])
         ]
       },
+      isDev ? {
+        label: 'Development',
+        submenu: [
+          { role: 'reload' },
+          { role: 'forcereload' },
+          { role: 'toggledevtools' }
+        ]
+      } : {},
       {
         role: 'help',
         submenu: [
@@ -206,14 +182,12 @@ function createWindow() {
       appVersion: app.getVersion(),
       chromeVersion: process.versions['chrome'],
       nodeVersion: process.versions['node'],
-      electronVersion: process.versions['electron']
+      electronVersion: process.versions['electron'],
+      isMac: isMac
     })
     about.on('close', function (event) {
       event.preventDefault();
       about.hide();
-      if (isMac) {
-        app.dock.hide()
-      }
     });
     // and load the login page of the app.
     if (newStart == true) {
@@ -284,6 +258,10 @@ if (!gotTheLock) {
 //   event.reply('reply', 'pong')
 // })
 
+ipcMain.on("aboutClose", () => {
+  about.close()
+})
+
 function alert(win, jsonData) {
   if (!dialogOpen) {
     dialogOpen = true
@@ -326,6 +304,41 @@ function logout(authFail) {
 //     });
 //   });
 // }
+
+
+
+
+// db = new sqlite3.Database('data.sqlite');
+// db.run(`CREATE TABLE "clients" (
+// 	"ID"	INTEGER NOT NULL,
+// 	"firstName"	TEXT NOT NULL,
+// 	"lastName"	TEXT NOT NULL,
+// 	"address"	TEXT NOT NULL,
+// 	"number"	INTEGER NOT NULL,
+// 	"email"	TEXT NOT NULL,
+// 	PRIMARY KEY("ID" AUTOINCREMENT)
+//   );`)
+// db.run(`CREATE TABLE "users" (
+// 	"ID"	INTEGER,
+// 	"first_name"	TEXT,
+// 	"last_name"	TEXT,
+// 	"username"	TEXT,
+// 	"password"	TEXT,
+// 	PRIMARY KEY("ID" AUTOINCREMENT)
+//   );`)
+// db.run(`CREATE TABLE "jobs" (
+// 	"ID"	INTEGER NOT NULL,
+// 	"description"	TEXT NOT NULL,
+// 	"hours"	INTEGER NOT NULL,
+// 	"earning"	INTEGER NOT NULL,
+// 	"clientID"	INTEGER NOT NULL,
+// 	PRIMARY KEY("ID" AUTOINCREMENT),
+// 	FOREIGN KEY("clientID") REFERENCES "clients"("ID")
+//   );`)
+
+
+
+
 
 
 function loadIndex() {

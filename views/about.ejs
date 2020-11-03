@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <%- include("partials/head.ejs"); %>
-  <link rel="preload" href="assets:///public/images/icon.png" as="image">
-  <title>About</title>
-</head>
+  <head>
+    <%- include("partials/head.ejs"); %>
+    <link rel="preload" href="assets:///public/images/icon.png" as="image">
+    <title>About</title>
+  </head>
 
-<body>
-  <header class="center-wrap">
-    <img class="company-logo-75" src="assets:///public/images/icon.png" alt="Fusion Services Home Help">
-    <h1>About</h1>
-  </header>
-  <main class="center-wrap">
-    <p><%= appName %>: <%= appVersion %><br>
-      Node.js: <%= nodeVersion %><br>
-      Chromium: <%= chromeVersion %><br>
-      Electron: <%= electronVersion %></p>
-  </main>
-  <footer class="center-wrap">
-    <h6>This app was made by Lucas Wilson (futurelucas4502)</h6>
+  <body>
+    <header class="center-wrap">
+      <img class="company-logo-75" src="assets:///public/images/icon.png" alt="Fusion Services Home Help">
+      <h1>About</h1>
+    </header>
+    <main class="center-wrap">
+      <p><%= appName %>: <%= appVersion %><br>
+        Node.js: <%= nodeVersion %><br>
+        Chromium: <%= chromeVersion %><br>
+        Electron: <%= electronVersion %></p>
+    </main>
+    <footer class="center-wrap">
+      <h6>This app was made by Lucas Wilson (futurelucas4502)</h6>
+      <% if(isMac) {%>
+      <button id="aboutClose" type="button" class="btn btn-primary">Close</button>
+      <%}%>
+      <script src="assets:///public/javascripts/about.js"></script>
   </footer>
 </body>
 

@@ -21,6 +21,7 @@
   "dependencies": {
     "@futurelucas4502/e-ejs": "file:../e-ejs",
     "bcrypt": "^5.0.0",
+    "electron-is-dev": "^1.2.0",
     "sqlite3": "^5.0.0"
   },
   "repository": {
