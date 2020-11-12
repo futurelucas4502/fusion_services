@@ -22,7 +22,7 @@
     display: none;
 }
 
-.cus-modal-footer{
+.cus-modal-footer {
     display: flex;
     justify-content: flex-end;
     padding: .75rem;
@@ -30,4 +30,8 @@
 
 .cus-modal-footer>* {
     margin: .25rem;
+}
+
+.cus-loader-margin {
+    margin: 1.25px
 }

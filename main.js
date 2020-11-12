@@ -271,6 +271,10 @@ function alert(win, jsonData) {
   }
 }
 
+ipcMain.on("alert", (event, arg) => {
+  alert(mainWindow, arg)
+})
+
 function logout(authFail) {
   ejs.renderFile(mainWindow, "views/login.ejs")
   username = null
@@ -305,40 +309,53 @@ function logout(authFail) {
 //   });
 // }
 
-
-
-
-// db = new sqlite3.Database('data.sqlite');
-// db.run(`CREATE TABLE "clients" (
-// 	"ID"	INTEGER NOT NULL,
-// 	"firstName"	TEXT NOT NULL,
-// 	"lastName"	TEXT NOT NULL,
-// 	"address"	TEXT NOT NULL,
-// 	"number"	INTEGER NOT NULL,
-// 	"email"	TEXT NOT NULL,
-// 	PRIMARY KEY("ID" AUTOINCREMENT)
-//   );`)
-// db.run(`CREATE TABLE "users" (
-// 	"ID"	INTEGER,
-// 	"first_name"	TEXT,
-// 	"last_name"	TEXT,
-// 	"username"	TEXT,
-// 	"password"	TEXT,
-// 	PRIMARY KEY("ID" AUTOINCREMENT)
-//   );`)
-// db.run(`CREATE TABLE "jobs" (
-// 	"ID"	INTEGER NOT NULL,
-// 	"description"	TEXT NOT NULL,
-// 	"hours"	INTEGER NOT NULL,
-// 	"earning"	INTEGER NOT NULL,
-// 	"clientID"	INTEGER NOT NULL,
-// 	PRIMARY KEY("ID" AUTOINCREMENT),
-// 	FOREIGN KEY("clientID") REFERENCES "clients"("ID")
-//   );`)
-
-
-
-
+ipcMain.on("databaseRes", (event, arg) => {
+  if (!arg.new) {
+    fs.copyFile(arg.path, path.join(process.cwd(), "data.sqlite"), (err) => {
+      if (err) {
+        console.log(err)
+        alert(mainWindow, {
+          type: 'error',
+          buttons: ['OK'],
+          title: 'Error',
+          message: 'An unknown error occurred please try again!'
+        })
+      }
+    });
+  } else {
+    db = new sqlite3.Database('data.sqlite');
+    db.run(`CREATE TABLE "clients" (
+	  "ID"	INTEGER NOT NULL,
+	  "firstName"	TEXT NOT NULL,
+    "lastName"	TEXT NOT NULL,
+    "address"	TEXT NOT NULL,
+    "number"	INTEGER NOT NULL,
+    "email"	TEXT NOT NULL,
+    PRIMARY KEY("ID" AUTOINCREMENT)
+    );`
+    )
+    db.run(`CREATE TABLE "users" (
+    "ID"	INTEGER,
+    "first_name"	TEXT,
+    "last_name"	TEXT,
+    "username"	TEXT,
+    "password"	TEXT,
+    PRIMARY KEY("ID" AUTOINCREMENT)
+    );`
+    )
+    db.run(`CREATE TABLE "jobs" (
+    "ID"	INTEGER NOT NULL,
+    "description"	TEXT NOT NULL,
+    "hours"	INTEGER NOT NULL,
+    "earning"	INTEGER NOT NULL,
+    "clientID"	INTEGER NOT NULL,
+    PRIMARY KEY("ID" AUTOINCREMENT),
+    FOREIGN KEY("clientID") REFERENCES "clients"("ID")
+    );`
+    )
+  }
+  ejs.renderFile(mainWindow, "views/login.ejs")
+})
 
 
 function loadIndex() {
