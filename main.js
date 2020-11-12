@@ -321,6 +321,7 @@ ipcMain.on("databaseRes", (event, arg) => {
           message: 'An unknown error occurred please try again!'
         })
       }
+      db = new sqlite3.Database('data.sqlite');
     });
   } else {
     db = new sqlite3.Database('data.sqlite');
