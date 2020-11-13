@@ -322,6 +322,7 @@ ipcMain.on("databaseRes", (event, arg) => {
         })
       }
       db = new sqlite3.Database('data.sqlite');
+      ejs.renderFile(mainWindow, "views/login.ejs")
     });
   } else {
     db = new sqlite3.Database('data.sqlite');
@@ -333,8 +334,7 @@ ipcMain.on("databaseRes", (event, arg) => {
     "number"	INTEGER NOT NULL,
     "email"	TEXT NOT NULL,
     PRIMARY KEY("ID" AUTOINCREMENT)
-    );`
-    )
+    );`)
     db.run(`CREATE TABLE "users" (
     "ID"	INTEGER,
     "first_name"	TEXT,
@@ -342,8 +342,26 @@ ipcMain.on("databaseRes", (event, arg) => {
     "username"	TEXT,
     "password"	TEXT,
     PRIMARY KEY("ID" AUTOINCREMENT)
-    );`
-    )
+    );`, () => {
+      db.run(`INSERT INTO users(first_name, last_name, username, password) VALUES(?, ?, ?, ?)`, [arg.firstName, arg.lastName, arg.username, bcrypt.hashSync(arg.password, 12)], function (err) {
+        if (err) {
+          console.log(err)
+          alert(mainWindow, {
+            type: 'error',
+            buttons: ['OK'],
+            title: 'Error Adding Admin user',
+            message: 'A error occured when adding an admin user please try again...'
+          })
+          fs.unlink(path.join(process.cwd(), "data.sqlite"), (err) => {
+            if (err) {
+              return new Error(`A fatal error has occured please close the app then go to '${process.cwd()}' and delete data.sqlite then restart the application.`)
+            }
+          })
+          return event.reply("err")
+        }
+        ejs.renderFile(mainWindow, "views/login.ejs")
+      });
+    })
     db.run(`CREATE TABLE "jobs" (
     "ID"	INTEGER NOT NULL,
     "description"	TEXT NOT NULL,
@@ -352,10 +370,8 @@ ipcMain.on("databaseRes", (event, arg) => {
     "clientID"	INTEGER NOT NULL,
     PRIMARY KEY("ID" AUTOINCREMENT),
     FOREIGN KEY("clientID") REFERENCES "clients"("ID")
-    );`
-    )
+    );`)
   }
-  ejs.renderFile(mainWindow, "views/login.ejs")
 })
 
 

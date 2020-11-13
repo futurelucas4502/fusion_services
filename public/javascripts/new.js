@@ -1,15 +1,22 @@
-let upload = new bootstrap.Collapse(document.getElementById("upload"))
+let upload = new bootstrap.Collapse(document.getElementById("upload"), { toggle: true })
+let details = new bootstrap.Collapse(document.getElementById("details"), { toggle: false })
 document.getElementById("newDatabase").addEventListener('click', (event) => {
+    document.getElementById("uploadDatabase").disabled = true;
     upload.hide()
+    details.show()
+    setTimeout(() => {
+        document.getElementById("uploadDatabase").disabled = false;
+    }, 400);
 })
 
 document.getElementById("uploadDatabase").addEventListener('click', (event) => {
+    document.getElementById("newDatabase").disabled = true;
+    details.hide()
     upload.show()
+    setTimeout(() => {
+        document.getElementById("newDatabase").disabled = false;
+    }, 400);
 })
-
-document.getElementById('uploadedFile').onchange = (event) => {
-    document.getElementById("formFileName").innerText = event.target.files[0] ? event.target.files[0].name : "Add data.sqlite backup..."
-}
 
 document.getElementById('fileUploadForm').onsubmit = (event) => {
     event.preventDefault()
@@ -35,4 +42,15 @@ document.getElementById('fileUploadForm').onsubmit = (event) => {
             path: document.getElementById('uploadedFile').files[0].path
         })
     }
+    ipcRenderer.send("databaseRes", {
+        new: true,
+        firstname: this.firstname.value,
+        lastname: this.lastname.value,
+        username: this.username.value,
+        password: this.password.value
+    })
 }
+
+ipcRenderer.on("err", () => {
+    document.location.reload()
+})

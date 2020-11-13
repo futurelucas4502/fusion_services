@@ -106,3 +106,6 @@ dist
 # Database
 *.sqlite
 *.sqlite-journal
+
+# Mac Stuff
+.DS_Store

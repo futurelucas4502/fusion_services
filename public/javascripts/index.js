@@ -35,9 +35,7 @@ document.getElementById('addClient').addEventListener('submit', (event) => {
     })
     document.getElementById('addClient').innerHTML = `
         <div class="text-center">
-            <div class="spinner-border text-success" role="status">
-                <span class="sr-only">Adding Client...</span>
-            </div>
+            <div class="spinner-border text-success" role="status"></div>
             <br>
             <a>Adding Client...</a>
         </div>`
@@ -60,9 +58,7 @@ document.getElementById('addClientJob').addEventListener('submit', (event) => {
     })
     document.getElementById('addClientJob').innerHTML = `
         <div class="text-center">
-            <div class="spinner-border text-success" role="status">
-                <span class="sr-only">Adding Job...</span>
-            </div>
+            <div class="spinner-border text-success" role="status"></div>
             <br>
             <a>Adding Job...</a>
         </div>`

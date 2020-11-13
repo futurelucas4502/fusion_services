@@ -33,15 +33,32 @@
                     Upload Database
                 </label>
             </div>
+            <div class="collapse mb-3" id="details">
+                <label class="text-center h6" for="details">Please enter details for the admin of the company...</label>
+                <div class="form-label-group">
+                    <input type="text" class="form-control" id="firstname" placeholder="Firstname" required>
+                    <label for="firstname">Firstname</label>
+                </div>
+
+                <div class="form-label-group">
+                    <input type="text" class="form-control" id="lastname" placeholder="Lastname" required>
+                    <label for="lastname">Lastname</label>
+                </div>
+
+                <div class="form-label-group">
+                    <input type="text" class="form-control" id="username" placeholder="Username" required>
+                    <label for="username">Username</label>
+                </div>
+                
+                <div class="form-label-group">
+                    <input type="password" id="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$" class="form-control" placeholder="Password" title="Password must have 8 - 30 characters, 1 capital letter, 1 lowercase letter, 1 number and 1 special character" required>
+                    <label for="inputPassword">Password</label>
+                </div>
+            </div>
             <div class="collapse mb-3" id="upload">
                 <div class="card card-body">
-                    <div class="form-file">
-                        <input type="file" class="form-file-input" id="uploadedFile">
-                        <label class="form-file-label" for="uploadedFile">
-                            <span id="formFileName" class="form-file-text">Add data.sqlite backup...</span>
-                            <span class="form-file-button">Upload</span>
-                        </label>
-                    </div>
+                    <label for="uploadedFile" class="form-label">Please upload the data.sqlite file...</label>
+                    <input class="form-control" type="file" id="uploadedFile">
                 </div>
             </div>
             <button id="submitNewBtn" class="btn btn-primary" type="submit">Submit</button>
