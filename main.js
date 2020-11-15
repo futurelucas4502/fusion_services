@@ -481,3 +481,7 @@ ipcMain.on('next', (event, arg) => {
     loadIndex()
   });
 })
+
+ipcMain.on("viewWork", (event, arg) => {
+  if (typeof arg){}
+})

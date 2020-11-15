@@ -63,3 +63,10 @@ document.getElementById('addClientJob').addEventListener('submit', (event) => {
             <a>Adding Job...</a>
         </div>`
 });
+
+document.getElementById('view').addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send("viewWork", {
+        client: document.getElementById("clientSelect").value
+    })
+})
